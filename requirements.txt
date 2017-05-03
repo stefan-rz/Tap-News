@@ -1,0 +1,9 @@
+python-dateutil
+lxml
+newspaper
+python-jsonrpc
+pymongo
+pika
+redis
+requests
+sklearn
