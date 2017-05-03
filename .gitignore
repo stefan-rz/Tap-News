@@ -41,3 +41,6 @@ Thumbs.db
 
 # compiled py file
 *.pyc
+
+# trained model file
+news_topic_modeling_service/model/
