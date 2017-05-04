@@ -14,7 +14,7 @@ if __name__ == '__main__':
     for news in cursor:
         count += 1
         print count
-        if 'class' in news:
+        if 'class' not in news:
             print 'Populating classes...'
             title = news['title']
             topic = news_topic_modeling_service_client.classify(title)
