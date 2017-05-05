@@ -3,6 +3,21 @@ import Auth from '../Auth/Auth';
 import React from 'react';
 
 class NewsCard extends React.Component{
+  constructor(props) {
+   super(props);
+   this.state = {isToggleOn: true};
+
+   // This binding is necessary to make `this` work in the callback
+   this.handleClick = this.handleClick.bind(this);
+ }
+
+ handleClick() {
+   this.setState(prevState => ({
+     isToggleOn: !prevState.isToggleOn
+   }));
+ }
+
+
   redirectToUrl(url) {
     this.sendClickLog();
     window.open(url, '_blank');
@@ -24,12 +39,13 @@ class NewsCard extends React.Component{
 
   render() {
     return(
-      <div className="news-container" onClick={() => this.redirectToUrl(this.props.news.url)}>
+      <div className="news-container">
         <div className='row'>
-          <div className='col s4 fill'>
+          <div className='col s4 fill hover-container'>
             <img src={this.props.news.urlToImage} alt='news'/>
+            <i onClick={this.handleClick} className={this.state.isToggleOn ? 'fa fa-thumbs-up' : 'fa fa-thumbs-down'}></i>
           </div>
-          <div className="col s8">
+          <div className="col s8" onClick={() => this.redirectToUrl(this.props.news.url)}>
             <div className="news-intro-col">
               <div className="news-intro-panel">
                 <h4>{this.props.news.title}</h4>
