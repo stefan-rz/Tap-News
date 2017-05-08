@@ -6,34 +6,26 @@ import os
 import redis
 import sys
 
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
-import news_api_client
+from config import Config as cfg
 from cloudAMQP_client import CloudAMQPClient
+import news_api_client
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+cf = cfg().load_config_file()['news_pipeline']
+REDIS_HOST = cf['REDIS_HOST']
+REDIS_PORT = cf['REDIS_PORT']
 
-NEWS_TIME_OUT_IN_SECONDS = 3600 * 24
-SLEEP_TIME_IN_SECOUNDS = 10
+NEWS_TIME_OUT_IN_SECONDS = cf['NEWS_TIME_OUT_IN_SECONDS']
+SLEEP_TIME_IN_SECOUNDS = cf['SLEEP_TIME_IN_SECOUNDS_MONITOR']
 
 # Use your own Cloud AMQP queue
-SCRAPE_NEWS_TASK_QUEUE_URL = ""
-SCRAPE_NEWS_TASK_QUEUE_NAME = ""
+SCRAPE_NEWS_TASK_QUEUE_URL = cf['SCRAPE_NEWS_TASK_QUEUE_URL']
+SCRAPE_NEWS_TASK_QUEUE_NAME = cf['SCRAPE_NEWS_TASK_QUEUE_NAME']
 
-NEWS_SOURCES = [
-    'bbc-news',
-    'bbc-sport',
-    'bloomberg',
-    'cnn',
-    'entertainment-weekly',
-    'espn',
-    'ign',
-    'techcrunch',
-    'the-new-york-times',
-    'the-wall-street-journal',
-    'the-washington-post'
-]
+NEWS_SOURCES = cf['NEWS_SOURCES']
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT)
 cloudAMQP_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)

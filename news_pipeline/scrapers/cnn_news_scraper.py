@@ -5,7 +5,7 @@ import requests
 from lxml import html
 
 GET_CNN_NEWS_XPATH = '''//p[@class="zn-body__paragraph"]//text() | //div[@class="zn-body__paragraph"]//text()'''
-
+print GET_CNN_NEWS_XPATH
 # Load user agents
 USER_AGENTS_FILE = os.path.join(os.path.dirname(__file__), 'user_agents.txt')
 USER_AGENTS = []

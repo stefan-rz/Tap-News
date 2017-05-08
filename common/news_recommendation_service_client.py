@@ -1,6 +1,11 @@
+import os
+import sys
 import pyjsonrpc
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
-URL = "http://localhost:5050/"
+from config import Config as cfg
+cf = cfg().load_config_file()['common']
+URL = cf['news_recommendation_service_client']['URL']
 
 client = pyjsonrpc.HttpClient(url=URL)
 

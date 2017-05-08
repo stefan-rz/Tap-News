@@ -9,26 +9,31 @@ from bson.json_util import dumps
 from datetime import datetime
 
 # import common package in parent directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+
 
 import mongodb_client
 import news_recommendation_service_client
 
 from cloudAMQP_client import CloudAMQPClient
+from config import Config as cfg
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
+cf = cfg().load_config_file()['operations']
 
-NEWS_TABLE_NAME = "news"
-CLICK_LOGS_TABLE_NAME = 'click_logs'
+REDIS_HOST = cf['REDIS_HOST']
+REDIS_PORT = cf['REDIS_PORT']
 
-NEWS_LIMIT = 100
-NEWS_LIST_BATCH_SIZE = 10
-USER_NEWS_TIME_OUT_IN_SECONDS = 60
+NEWS_TABLE_NAME = cf['NEWS_TABLE_NAME']
+CLICK_LOGS_TABLE_NAME = cf['CLICK_LOGS_TABLE_NAME']
+
+NEWS_LIMIT = cf['NEWS_LIMIT']
+NEWS_LIST_BATCH_SIZE = cf['NEWS_LIST_BATCH_SIZE']
+USER_NEWS_TIME_OUT_IN_SECONDS = cf['USER_NEWS_TIME_OUT_IN_SECONDS']
 
 # TODO: Use your own queue
-LOG_CLICKS_TASK_QUEUE_URL = ""
-LOG_CLICKS_TASK_QUEUE_NAME = ""
+LOG_CLICKS_TASK_QUEUE_URL = cf['LOG_CLICKS_TASK_QUEUE_URL']
+LOG_CLICKS_TASK_QUEUE_NAME = cf['LOG_CLICKS_TASK_QUEUE_NAME']
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT, db=0)
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
@@ -42,6 +47,7 @@ def getNewsSummariesForUser(user_id, page_num):
     sliced_news = []
 
     if redis_client.get(user_id) is not None:
+        print 'redis is not None'
         news_digests = pickle.loads(redis_client.get(user_id))
 
         # If begin_index is out of range, this will return empty list;
@@ -86,3 +92,4 @@ def logNewsClickForUser(user_id, news_id):
     # Send log task to machine learning service for prediction
     message = {'userId': user_id, 'newsId': news_id, 'timestamp': str(datetime.utcnow())}
     cloudAMQP_client.sendMessage(message);
+

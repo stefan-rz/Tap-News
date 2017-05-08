@@ -5,13 +5,17 @@ import sys
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
 import mongodb_client
+from config import Config as cfg
 
-PREFERENCE_MODEL_TABLE_NAME = "user_preference_model"
+cf = cfg().load_config_file()['news_recommendation_service']
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 5050
+PREFERENCE_MODEL_TABLE_NAME = cf['PREFERENCE_MODEL_TABLE_NAME']
+
+SERVER_HOST = cf['SERVER_HOST']
+SERVER_PORT = cf['SERVER_PORT']
 
 # Ref: https://www.python.org/dev/peps/pep-0485/#proposed-implementation
 # Ref: http://stackoverflow.com/questions/5595425/what-is-the-best-way-to-compare-floats-for-almost-equality-in-python

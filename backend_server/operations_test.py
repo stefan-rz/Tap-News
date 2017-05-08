@@ -6,25 +6,30 @@ from sets import Set
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
+from config import Config as cfg
 
+cf = cfg().load_config_file()['operations']
 # TODO: use your own queue.
-LOG_CLICKS_TASK_QUEUE_URL = ""
-LOG_CLICKS_TASK_QUEUE_NAME = ""
+LOG_CLICKS_TASK_QUEUE_URL = cf['LOG_CLICKS_TASK_QUEUE_URL']
+LOG_CLICKS_TASK_QUEUE_NAME = cf['LOG_CLICKS_TASK_QUEUE_NAME']
 
-CLICK_LOGS_TABLE_NAME = 'click_logs'
+CLICK_LOGS_TABLE_NAME = cf['CLICK_LOGS_TABLE_NAME']
 
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 
-# Start Redis and MongoDB before running following tests.
+
+# Start Redis, MongoDB and recommandation_service before running following tests.
 
 def test_getNewsSummariesForUser_basic():
     news = operations.getNewsSummariesForUser('test', 1)
     print news
     assert len(news) > 0
     print 'test_getNewsSummariesForUser_basic passed!'
+
 
 def test_getNewsSummariesForUser_pagination():
     news_page_1 = operations.getNewsSummariesForUser('test', 1)
@@ -39,6 +44,7 @@ def test_getNewsSummariesForUser_pagination():
     assert len(digests_page_1_set.intersection(digests_page_2_set)) == 0
 
     print 'test_getNewsSummariesForUser_pagination passed!'
+
 
 def test_logNewsClickForUser_basic():
     db = mongodb_client.get_db()
@@ -57,7 +63,7 @@ def test_logNewsClickForUser_basic():
 
     db[CLICK_LOGS_TABLE_NAME].delete_many({"userId": "test"})
 
-    # Verify the message has been sent to queue.
+    # Verify the message has been sent to queue. Delay may occur and please re-run after a while if this test failed
     msg = cloudAMQP_client.getMessage()
     assert msg is not None
     assert msg['userId'] == 'test'

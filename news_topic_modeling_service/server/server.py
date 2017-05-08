@@ -12,29 +12,32 @@ from tensorflow.contrib.learn.python.learn.estimators import model_fn
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'config'))
 # import packages in trainer
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'trainer'))
 import news_cnn_model
+from config import Config as cfg
 
+cf = cfg().load_config_file()['news_topic_modeling_service']['server']
 learn = tf.contrib.learn
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 6060
+SERVER_HOST = cf['SERVER_HOST']
+SERVER_PORT = cf['SERVER_PORT']
 
-MODEL_DIR = '../model'
-MODEL_UPDATE_LAG_IN_SECONDS = 10
+MODEL_DIR = cf['MODEL_DIR']
+MODEL_UPDATE_LAG_IN_SECONDS = cf['MODEL_UPDATE_LAG_IN_SECONDS']
 
-N_CLASSES = 17;
+N_CLASSES = cf['N_CLASSES']
 
-VARS_FILE = '../model/vars'
-VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_procesor_save_file'
+VARS_FILE = cf['VARS_FILE']
+VOCAB_PROCESSOR_SAVE_FILE = cf['VOCAB_PROCESSOR_SAVE_FILE']
 
-n_words = 0
+n_words = cf['n_words']
 
-MAX_DOCUMENT_LENGTH = 500
-vocab_processor = None
+MAX_DOCUMENT_LENGTH = cf['MAX_DOCUMENT_LENGTH']
+vocab_processor = cf['vocab_processor']
 
-classifier = None
+classifier = cf['classifier']
 
 def restoreVars():
     with open(VARS_FILE, 'r') as f:

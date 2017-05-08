@@ -9,21 +9,25 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
+
+from config import Config as cfg
 import mongodb_client
 import news_topic_modeling_service_client
 
 from cloudAMQP_client import CloudAMQPClient
 
+cf = cfg().load_config_file()['news_pipeline']
 # Use your own Cloud AMQP queue
-DEDUPE_NEWS_TASK_QUEUE_URL = ""
-DEDUPE_NEWS_TASK_QUEUE_NAME = ""
+DEDUPE_NEWS_TASK_QUEUE_URL = cf['DEDUPE_NEWS_TASK_QUEUE_URL']
+DEDUPE_NEWS_TASK_QUEUE_NAME = cf['DEDUPE_NEWS_TASK_QUEUE_NAME']
 
-SLEEP_TIME_IN_SECONDS = 1
+SLEEP_TIME_IN_SECONDS = cf['SLEEP_TIME_IN_SECONDS_DEDUPER']
 
-NEWS_TABLE_NAME = "news"
+NEWS_TABLE_NAME = cf['NEWS_TABLE_NAME']
 
-SAME_NEWS_SIMILARITY_THRESHOLD = 0.9
+SAME_NEWS_SIMILARITY_THRESHOLD = cf['SAME_NEWS_SIMILARITY_THRESHOLD']
 
 cloudAMQP_client = CloudAMQPClient(DEDUPE_NEWS_TASK_QUEUE_URL, DEDUPE_NEWS_TASK_QUEUE_NAME)
 
@@ -68,12 +72,14 @@ def handle_message(msg):
     if title is not None:
         topic = news_topic_modeling_service_client.classify(description)
         task['class'] = topic
+        print topic
 
     db[NEWS_TABLE_NAME].replace_one({'digest': task['digest']}, task, upsert=True)
-
+    print 'MongDB insert succesfully................'
 while True:
     if cloudAMQP_client is not None:
         msg = cloudAMQP_client.getMessage()
+        print 'the message from deduper queue is %r' % msg is not None
         if msg is not None:
             # Parse and process the task
             try:

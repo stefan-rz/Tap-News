@@ -1,8 +1,9 @@
 var jayson = require('jayson');
-
+var load_config = require('../config/config')
+var cf = load_config.load_config().web_server.server.rpc_client
 var client = jayson.client.http({
-    port: 4040,
-    hostname: 'localhost'
+    port: cf.port,
+    hostname: cf.hostname
 });
 
 // Test RPC method

@@ -22,23 +22,26 @@ import sys
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
+from config import Config as cfg
 
+cf = cfg().load_config_file()['news_recommendation_service']
 # Don't modify this value unless you know what you are doing.
-NUM_OF_CLASSES = 17
-INITIAL_P = 1.0 / NUM_OF_CLASSES
-ALPHA = 0.1
+NUM_OF_CLASSES = cf['NUM_OF_CLASSES']
+INITIAL_P = cf['INITIAL_P']
+ALPHA = cf['ALPHA']
 
-SLEEP_TIME_IN_SECONDS = 1
+SLEEP_TIME_IN_SECONDS = cf['SLEEP_TIME_IN_SECONDS']
 
 # TODO: Use your own queue
-LOG_CLICKS_TASK_QUEUE_URL = ""
-LOG_CLICKS_TASK_QUEUE_NAME = ""
+LOG_CLICKS_TASK_QUEUE_URL = cf['LOG_CLICKS_TASK_QUEUE_URL']
+LOG_CLICKS_TASK_QUEUE_NAME = cf['LOG_CLICKS_TASK_QUEUE_NAME']
 
-PREFERENCE_MODEL_TABLE_NAME = "user_preference_model"
-NEWS_TABLE_NAME = "news"
+PREFERENCE_MODEL_TABLE_NAME = cf['PREFERENCE_MODEL_TABLE_NAME']
+NEWS_TABLE_NAME = cf['NEWS_TABLE_NAME']
 
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 

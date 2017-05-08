@@ -1,8 +1,14 @@
+import os
+import sys
 import operations
 import pyjsonrpc
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 4040
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
+
+from config import Config as cfg
+cf = cfg().load_config_file()['service']
+SERVER_HOST = cf['SERVER_HOST']
+SERVER_PORT = cf['SERVER_PORT']
 
 class RequestHandler(pyjsonrpc.HttpRequestHandler):
     """ Test method """
