@@ -70,16 +70,16 @@ def handle_message(msg):
     # Classify news
     title = task['title']
     if title is not None:
-        topic = news_topic_modeling_service_client.classify(description)
+        topic = news_topic_modeling_service_client.classify(title)
         task['class'] = topic
         print topic
 
     db[NEWS_TABLE_NAME].replace_one({'digest': task['digest']}, task, upsert=True)
-    print 'MongDB insert succesfully................'
+    print 'Insert/Update MongoDB succesfully................'
 while True:
     if cloudAMQP_client is not None:
         msg = cloudAMQP_client.getMessage()
-        print 'the message from deduper queue is %r' % msg is not None
+        print 'the message from deduper queue is not none right? %r' % (msg is not None)
         if msg is not None:
             # Parse and process the task
             try:
