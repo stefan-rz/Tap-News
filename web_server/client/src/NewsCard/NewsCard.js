@@ -5,27 +5,37 @@ import React from 'react';
 class NewsCard extends React.Component{
   constructor(props) {
    super(props);
-   this.state = {isToggleOn: true};
-
-   // This binding is necessary to make `this` work in the callback
-   this.handleClick = this.handleClick.bind(this);
+   this.state = {isToggleLikeOn: false, isToggleDisLikeOn: false};
  }
 
- handleClick() {
-   this.setState(prevState => ({
-     isToggleOn: !prevState.isToggleOn
+ handleLikeClick(e) {
+     this.setState(prevState => ({
+     isToggleLikeOn: !prevState.isToggleLikeOn
    }));
+     console.log(this.state.isToggleLikeOn)
+     this.sendClickLog()
+      e.preventDefault(); // Now link won't go anywhere
  }
 
+ handleDisLikeClick(e) {
+     this.setState(prevState => ({
+     isToggleDisLikeOn: !prevState.isToggleDisLikeOn
+   }));
+      this.sendClickLog()
+     e.preventDefault(); // Now link won't go anywhere
 
-  redirectToUrl(url) {
+}
+
+  redirectToUrl(e, url) {
     this.sendClickLog();
     window.open(url, '_blank');
+    e.preventDefault(); // Now link won't go anywhere
   }
 
   sendClickLog() {
     let url = 'http://localhost:3000/news/userId/' + Auth.getEmail()
-              + '/newsId/' + this.props.news.digest;
+              + '/newsId/' + this.props.news.digest + '/isLikeOn/' + this.state.isToggleLikeOn
+    + '/isDislikeOn/' + this.state.isToggleDisLikeOn;
 
     let request = new Request(encodeURI(url), {
       method: 'POST',
@@ -41,11 +51,20 @@ class NewsCard extends React.Component{
     return(
       <div className="news-container">
         <div className='row'>
-          <div className='col s4 fill hover-container'>
+          <div className='col s4 fill hover-col'>
             <img src={this.props.news.urlToImage} alt='news'/>
-            <i onClick={this.handleClick} className={this.state.isToggleOn ? 'fa fa-thumbs-up' : 'fa fa-thumbs-down'}></i>
+            <div className='outer'>
+                <div className='inside'>
+                    <a className="list-group-item" href='#' onClick={(e) => this.handleLikeClick(e)}>
+                        <i className='fa fa-heart fa-1x' aria-hidden='true'>{this.state.isToggleLikeOn ? 'Remove Like' : 'Like'}</i>
+                    </a>
+                    <a className="list-group-item" href="#" onClick={(e) => this.handleDisLikeClick(e)}>
+                        <i className='fa fa-ban fa-1x' aria-hidden='true'>{this.state.isToggleDisLikeOn ? 'Remove DisLike' : 'DisLike'}</i>
+                    </a>
+                </div>
+            </div>
           </div>
-          <div className="col s8" onClick={() => this.redirectToUrl(this.props.news.url)}>
+          <div className="col s8" onClick={(e) => this.redirectToUrl(e, this.props.news.url)}>
             <div className="news-intro-col">
               <div className="news-intro-panel">
                 <h4>{this.props.news.title}</h4>

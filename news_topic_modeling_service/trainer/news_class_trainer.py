@@ -8,11 +8,11 @@ import shutil
 import tensorflow as tf
 
 from sklearn import metrics
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'config'))
 
 from config import Config as cfg
 
-cf = cfg().load_config_file()['trainer']
+#cf = cfg().load_config_file()['trainer']
 
 learn = tf.contrib.learn
 

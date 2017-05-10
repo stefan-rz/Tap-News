@@ -37,22 +37,56 @@
     object-fit: cover;
 }
 
-.hover-container:hover > img{
-  opacity: 0.5;
-  filter: alpha(opacity=50); /* For IE8 and earlier */
+.img {
+  position:absolute;
+  display:block;
+  z-index: 1;
 }
 
+.img {
+  position:absolute;
+  display:block;
+  z-index: 1;
+}
+
+.outer {
+    position: absolute;
+    display: table;
+    z-index: 2;
+    opacity: 0;
+    overflow: hidden;
+    vertical-align: middle;
+    text-align: center;
+    margin: auto;
+
+}
+
+.outer:hover {
+    opacity:1;
+}
+
+.hover-col:hover > img{
+  opacity: 0.5;
+}
+
+div.inside {
+    xdisplay: block;
+    width: auto;
+    height: 80px;
+    display:table-cell;
+    vertical-align:middle;
+
+}
+
+
+
 .fa {
-  position: absolute;
-  opacity: 0;
-  font-size: 100px;
-  transition: .5s ease;
-  cursor: pointer;
-  user-select: none;
+    color: #bbb;
+    text-decoration: none;
+    padding: 0 10px 0 10px;
 }
 
 .fa:hover {
-  opacity: 1;
-  filter: alpha(opacity=100); /* For IE8 and earlier */
-  color: red;
+    color: palevioletred;
 }
+.fa:active

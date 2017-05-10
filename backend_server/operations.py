@@ -83,13 +83,15 @@ def getNewsSummariesForUser(user_id, page_num):
             news['time'] = 'today'
     return json.loads(dumps(sliced_news))
 
-def logNewsClickForUser(user_id, news_id):
-    message = {'userId': user_id, 'newsId': news_id, 'timestamp': datetime.utcnow()}
+def logNewsClickForUser(user_id, news_id, isLikeOn, isDisLikeOn):
+    message = {'userId': user_id, 'newsId': news_id, 'isLikeOn': isLikeOn,
+               'isDisLikeOn': isDisLikeOn, 'timestamp': datetime.utcnow()}
 
     db = mongodb_client.get_db()
     db[CLICK_LOGS_TABLE_NAME].insert(message)
 
     # Send log task to machine learning service for prediction
-    message = {'userId': user_id, 'newsId': news_id, 'timestamp': str(datetime.utcnow())}
+    message = {'userId': user_id, 'newsId': news_id, 'isLikeOn': isLikeOn,
+               'isDisLikeOn': isDisLikeOn, 'timestamp': str(datetime.utcnow())}
     cloudAMQP_client.sendMessage(message);
 

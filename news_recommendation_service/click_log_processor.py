@@ -31,9 +31,10 @@ from config import Config as cfg
 cf = cfg().load_config_file()['news_recommendation_service']
 # Don't modify this value unless you know what you are doing.
 NUM_OF_CLASSES = cf['NUM_OF_CLASSES']
-INITIAL_P = cf['INITIAL_P']
+INITIAL_P = cf['INITIAL_P'] / NUM_OF_CLASSES
 ALPHA = cf['ALPHA']
-
+LIKE_ALPHA = ALPHA + 0.5
+DISLIKE_ALPHA = ALPHA - 0.05
 SLEEP_TIME_IN_SECONDS = cf['SLEEP_TIME_IN_SECONDS']
 
 # TODO: Use your own queue
@@ -56,6 +57,9 @@ def handle_message(msg):
 
     userId = msg['userId']
     newsId = msg['newsId']
+    isLikeOn = msg['isLikeOn']
+    isDisLikeOn = msg['isDisLikeOn']
+
 
     # Update user's preference
     db = mongodb_client.get_db()
@@ -78,17 +82,19 @@ def handle_message(msg):
     if (news is None
         or 'class' not in news
         or news['class'] not in news_classes.classes):
-        print news is None
-        print 'class' not in news
-        print news['class'] not in news_classes.classes
         print 'Skipping processing...'
         return
 
     click_class = news['class']
 
-    # Update the clicked one.
     old_p = model['preference'][click_class]
-    model['preference'][click_class] = float((1 - ALPHA) * old_p + ALPHA)
+    # Update the clicked one.
+    if not (isLikeOn or isDisLikeOn):
+        model['preference'][click_class] = float((1 - ALPHA) * old_p + ALPHA)
+    elif isLikeOn:
+        model['preference'][click_class] = float((1 - ALPHA) * old_p + LIKE_ALPHA)
+    elif isDisLikeOn:
+        model['preference'][click_class] = float((1 - ALPHA) * old_p + DISLIKE_ALPHA)
 
     # Update not clicked classes.
     for i, prob in model['preference'].iteritems():

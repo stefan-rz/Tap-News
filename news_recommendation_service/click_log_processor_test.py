@@ -23,7 +23,6 @@ def test_basic():
     msg = {"userId": "test_user",
            "newsId": "test_news",
            "timestamp": str(datetime.utcnow())}
-
     click_log_processor.handle_message(msg)
 
     model = db[PREFERENCE_MODEL_TABLE_NAME].find_one({'userId':'test_user'})
