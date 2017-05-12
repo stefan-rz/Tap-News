@@ -66,7 +66,7 @@
 }
 
 .hover-col:hover > img{
-  opacity: 0.5;
+  opacity: 0.2;
 }
 
 div.inside {
@@ -78,10 +78,20 @@ div.inside {
 
 }
 
+a {
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+}
 
+a:hover {
+    color: coral;
+}
 
 .fa {
-    color: #bbb;
+    color: ivory;
     text-decoration: none;
     padding: 0 10px 0 10px;
 }
@@ -89,4 +99,4 @@ div.inside {
 .fa:hover {
     color: palevioletred;
 }
-.fa:active
+

@@ -73,14 +73,13 @@ class NewsCard extends React.Component {
                         <img src={this.props.news.urlToImage} alt='news'/>
                         <div className='outer'>
                             <div className='inside'>
-                                <a className="list-group-item" href='#' onClick={(e) => this.handleLikeClick(e)}>
-                                    <i className='fa fa-heart fa-1x'
-                                       aria-hidden='true'>{this.state.isToggleLikeOn ? 'Remove Like' : 'Like'}</i>
-                                </a>
-                                <a className="list-group-item" href="#" onClick={(e) => this.handleDisLikeClick(e)}>
-                                    <i className='fa fa-ban fa-1x'
-                                       aria-hidden='true'>{this.state.isToggleDisLikeOn ? 'Remove DisLike' : 'DisLike'}</i>
-                                </a>
+                               <a onClick={(e) => this.handleLikeClick(e)}><i className='fa fa-heart fa-2x fa-fw'
+                                       aria-hidden='true'></i>&nbsp; {this.state.isToggleLikeOn ? 'Remove Like' : 'Like'}
+                               </a>
+                               <a onClick={(e) => this.handleDisLikeClick(e)}><i className='fa fa-ban fa-2x fa-fw'
+                                                                                 aria-hidden='true'></i>
+                                   &nbsp; {this.state.isToggleDisLikeOn ? 'Remove DisLike' : 'DisLike'}
+                               </a>
                             </div>
                         </div>
                     </div>
