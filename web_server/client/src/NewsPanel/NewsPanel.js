@@ -64,7 +64,7 @@ class NewsPanel extends React.Component{
     let news_list = this.state.news.map(function(news) {
       return(
         <a className='list-group-item' href="#">
-          <NewsCard news={news} />
+          <NewsCard news={news}/>
         </a>
       );
     });

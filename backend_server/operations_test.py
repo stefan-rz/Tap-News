@@ -1,3 +1,4 @@
+import logging
 import operations
 import os
 import sys
@@ -13,6 +14,9 @@ from cloudAMQP_client import CloudAMQPClient
 from config import Config as cfg
 
 cf = cfg().load_config_file()['operations']
+cf2 = cfg().load_config_file()['logging']['loggers']['keys']
+print cf2[1]
+app_log = logging.getLogger(cf2[1] + __name__)
 # TODO: use your own queue.
 LOG_CLICKS_TASK_QUEUE_URL = cf['LOG_CLICKS_TASK_QUEUE_URL']
 LOG_CLICKS_TASK_QUEUE_NAME = cf['LOG_CLICKS_TASK_QUEUE_NAME']
@@ -28,7 +32,7 @@ def test_getNewsSummariesForUser_basic():
     news = operations.getNewsSummariesForUser('test', 1)
     print news
     assert len(news) > 0
-    print 'test_getNewsSummariesForUser_basic passed!'
+    app_log.info('test_getNewsSummariesForUser_basic passed!')
 
 
 def test_getNewsSummariesForUser_pagination():
@@ -43,14 +47,14 @@ def test_getNewsSummariesForUser_pagination():
     digests_page_2_set = Set([news['digest'] for news in news_page_2])
     assert len(digests_page_1_set.intersection(digests_page_2_set)) == 0
 
-    print 'test_getNewsSummariesForUser_pagination passed!'
+    app_log.info('test_getNewsSummariesForUser_pagination passed!')
 
 
 def test_logNewsClickForUser_basic():
     db = mongodb_client.get_db()
-    db[CLICK_LOGS_TABLE_NAME].delete_many({"userId": "test"})
+    #db[CLICK_LOGS_TABLE_NAME].delete_many({"userId": "test"})
 
-    operations.logNewsClickForUser('test', 'test_news')
+    operations.logNewsClickForUser('test', 'test_news', False, True)
 
     # Verify click logs written into MongoDB
     # Get most recent record in MongoDB.
@@ -70,7 +74,7 @@ def test_logNewsClickForUser_basic():
     assert msg['newsId'] == 'test_news'
     assert msg['timestamp'] is not None
 
-    print 'test_logNewsClicksForUser_basic passed!'
+    app_log.info('test_logNewsClicksForUser_basic passed!')
 
 
 if __name__ == "__main__":

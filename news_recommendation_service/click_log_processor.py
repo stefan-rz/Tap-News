@@ -33,8 +33,8 @@ cf = cfg().load_config_file()['news_recommendation_service']
 NUM_OF_CLASSES = cf['NUM_OF_CLASSES']
 INITIAL_P = cf['INITIAL_P'] / NUM_OF_CLASSES
 ALPHA = cf['ALPHA']
-LIKE_ALPHA = ALPHA + 0.5
-DISLIKE_ALPHA = ALPHA - 0.05
+LIKE_ALPHA = 2 * ALPHA
+DISLIKE_ALPHA = ALPHA / 2
 SLEEP_TIME_IN_SECONDS = cf['SLEEP_TIME_IN_SECONDS']
 
 # TODO: Use your own queue
@@ -57,8 +57,8 @@ def handle_message(msg):
 
     userId = msg['userId']
     newsId = msg['newsId']
-    isLikeOn = msg['isLikeOn']
-    isDisLikeOn = msg['isDisLikeOn']
+    isLikeToggleOn = msg['isLikeToggleOn']
+    isDisLikeToggleOn = msg['isDisLikeToggleOn']
 
 
     # Update user's preference
@@ -89,11 +89,11 @@ def handle_message(msg):
 
     old_p = model['preference'][click_class]
     # Update the clicked one.
-    if not (isLikeOn or isDisLikeOn):
+    if not (isLikeToggleOn or isDisLikeToggleOn):
         model['preference'][click_class] = float((1 - ALPHA) * old_p + ALPHA)
-    elif isLikeOn:
+    elif isLikeToggleOn:
         model['preference'][click_class] = float((1 - ALPHA) * old_p + LIKE_ALPHA)
-    elif isDisLikeOn:
+    elif isDisLikeToggleOn:
         model['preference'][click_class] = float((1 - ALPHA) * old_p + DISLIKE_ALPHA)
 
     # Update not clicked classes.

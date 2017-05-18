@@ -5,20 +5,19 @@ import React from 'react';
 class NewsCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {isToggleLikeOn: false, isToggleDisLikeOn: false};
+        this.state = {isToggleLikeOn: this.props.news.isLikeToggleOn, isToggleDislikeOn: this.props.news.isDislikeToggleOn};
     }
 
     handleLikeClick(e) {
         this.setState(prevState => ({
             isToggleLikeOn: !prevState.isToggleLikeOn
         }));
-        console.log(this.state.isToggleLikeOn)
         e.preventDefault(); // Now link won't go anywhere
     }
 
     handleDisLikeClick(e) {
         this.setState(prevState => ({
-            isToggleDisLikeOn: !prevState.isToggleDisLikeOn
+            isToggleDislikeOn: !prevState.isToggleDislikeOn
         }));
         e.preventDefault(); // Now link won't go anywhere
 
@@ -26,18 +25,18 @@ class NewsCard extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.isToggleLikeOn === true && this.state.isToggleLikeOn !== prevState.isToggleLikeOn
-            && this.state.isToggleDisLikeOn === true) {
-            this.setState({isToggleDisLikeOn: false});
-        } else if (this.state.isToggleDisLikeOn === true && this.state.isToggleDisLikeOn
-            !== prevState.isToggleDisLikeOn && this.state.isToggleLikeOn === true) {
+            && this.state.isToggleDislikeOn === true) {
+            this.setState({isToggleDislikeOn: false});
+        } else if (this.state.isToggleDislikeOn === true && this.state.isToggleDislikeOn
+            !== prevState.isToggleDislikeOn && this.state.isToggleLikeOn === true) {
             this.setState({isToggleLikeOn: false});
         }
 
         if (this.state.isToggleLikeOn !== prevState.isToggleLikeOn ||
-            this.state.isToggleDisLikeOn !== prevState.isToggleDisLikeOn) {
+            this.state.isToggleDislikeOn !== prevState.isToggleDislikeOn) {
             this.sendClickLog();
             console.log("isToggleLikeOn: " + this.state.isToggleLikeOn);
-            console.log("isToggleDisLikeOn: " + this.state.isToggleDisLikeOn);
+            console.log("isToggleDislikeOn: " + this.state.isToggleDislikeOn);
         }
 
 
@@ -51,8 +50,8 @@ class NewsCard extends React.Component {
 
     sendClickLog() {
         let url = 'http://localhost:3000/news/userId/' + Auth.getEmail()
-            + '/newsId/' + this.props.news.digest + '/isLikeOn/' + this.state.isToggleLikeOn
-            + '/isDislikeOn/' + this.state.isToggleDisLikeOn;
+            + '/newsId/' + this.props.news.digest + '/isLikeToggleOn/' + this.state.isToggleLikeOn
+            + '/isDislikeToggleOn/' + this.state.isToggleDislikeOn
 
         let request = new Request(encodeURI(url), {
             method: 'POST',
@@ -78,7 +77,7 @@ class NewsCard extends React.Component {
                                </a>
                                <a onClick={(e) => this.handleDisLikeClick(e)}><i className='fa fa-ban fa-2x fa-fw'
                                                                                  aria-hidden='true'></i>
-                                   &nbsp; {this.state.isToggleDisLikeOn ? 'Remove DisLike' : 'DisLike'}
+                                   &nbsp; {this.state.isToggleDislikeOn ? 'Remove DisLike' : 'DisLike'}
                                </a>
                             </div>
                         </div>

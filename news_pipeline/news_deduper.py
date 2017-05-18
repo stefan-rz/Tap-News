@@ -74,6 +74,14 @@ def handle_message(msg):
         task['class'] = topic
         print topic
 
+    disLike = task['isDisLikeToggleOn']
+    if disLike is None:
+        task['isDisLikeToggleOn'] = False
+
+    like = task['isLikeToggleOn']
+    if like is None:
+        task['isLikeToggleOn'] = False
+
     db[NEWS_TABLE_NAME].replace_one({'digest': task['digest']}, task, upsert=True)
     print 'Insert/Update MongoDB succesfully................'
 while True:

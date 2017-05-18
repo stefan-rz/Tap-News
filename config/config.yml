@@ -1,3 +1,20 @@
+logging:
+  loggers:
+    keys:
+      - root
+      - app
+      - app_error
+  handlers:
+    keys:
+      - applog
+      - err
+  handler_err:
+    class: StreamHandler
+    level: ERROR
+  handler_applog:
+    class: FileHandler
+    level: ERROR
+    args: ../config/app.log
 web_server:
   server:
     rpc_client:

@@ -27,6 +27,7 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
     @pyjsonrpc.rpcmethod
     def getPreferenceForUser(self, user_id):
         db = mongodb_client.get_db()
+        print "getPreferenceForUser"
         model = db[PREFERENCE_MODEL_TABLE_NAME].find_one({'userId':user_id})
         if model is None:
             return []

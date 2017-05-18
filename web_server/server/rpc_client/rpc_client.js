@@ -25,8 +25,8 @@ function getNewsSummariesForUser(user_id, page_num, callback) {
 }
 
 // Log a news click event for a user
-function logNewsClickForUser(user_id, news_id, isLikeOn, isDisLikeOn) {
-    client.request('logNewsClickForUser', [user_id, news_id, isLikeOn, isDisLikeOn], function(err, error, response) {
+function logNewsClickForUser(user_id, news_id, isLikeToggleOn, isDislikeToggleOn) {
+    client.request('logNewsClickForUser', [user_id, news_id, isLikeToggleOn, isDislikeToggleOn], function(err, error, response) {
         if (err) throw err;
         console.log(response);
     });

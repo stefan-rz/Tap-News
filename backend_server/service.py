@@ -6,6 +6,7 @@ import pyjsonrpc
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
 from config import Config as cfg
+from applogconfig import app_log
 cf = cfg().load_config_file()['service']
 SERVER_HOST = cf['SERVER_HOST']
 SERVER_PORT = cf['SERVER_PORT']
@@ -20,12 +21,13 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
     """ Get news summaries for a user """
     @pyjsonrpc.rpcmethod
     def getNewsSummariesForUser(self, user_id, page_num):
+        app_log.info("rpc service: getNewsSummariesForUser")
         return operations.getNewsSummariesForUser(user_id, page_num)
 
     """ Log user news clicks """
     @pyjsonrpc.rpcmethod
-    def logNewsClickForUser(self, user_id, news_id, isLikeOn, isDisLikeOn):
-        return operations.logNewsClickForUser(user_id, news_id, isLikeOn, isDisLikeOn)
+    def logNewsClickForUser(self, user_id, news_id, isLikeToggleOn, isDislikeToggleOn):
+        return operations.logNewsClickForUser(user_id, news_id, isLikeToggleOn, isDislikeToggleOn)
 
 # Threading HTTP Server
 http_server = pyjsonrpc.ThreadingHttpServer(
